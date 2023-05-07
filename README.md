@@ -43,3 +43,10 @@ jobs:
         
 ```
 
+Note:
+
+Giving read and write permission as the action will be post an comment in the PR.
+
+<img width="1440" alt="image" src="https://user-images.githubusercontent.com/23126394/236687406-1ed5ae85-62d5-4535-8462-c1db26a27970.png">
+
+
