@@ -1,11 +1,13 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: PR summary
+author: Karthikeyan
+description: Generating explanation of PR which has been opened by the developer.
 inputs:
-  milliseconds: # change this
+  OPENAI_API_KEY:
+    description: Open AI API key
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  GITHUB_TOKEN:
+    description: Github Token
+    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'
