@@ -1,4 +1,4 @@
-name: PR summary
+name: PR summary sample
 author: Karthikeyan
 description: Generating explanation of PR which has been opened by the developer.
 inputs:
