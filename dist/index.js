@@ -46,56 +46,56 @@ const openai_1 = __nccwpck_require__(9211);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            if (github.context.eventName !== "pull_request") {
+            if (github.context.eventName !== 'pull_request') {
                 // The core module on the other hand let's you get
                 // inputs or create outputs or control the action flow
                 // e.g. by producing a fatal error
-                core.setFailed("Can only run on pull requests!");
+                core.setFailed('Can only run on pull requests!');
                 return;
             }
-            const github_token = core.getInput("GITHUB_TOKEN");
-            const openai_key = core.getInput("OPENAI_API_KEY");
+            const github_token = core.getInput('GITHUB_TOKEN');
+            const openai_key = core.getInput('OPENAI_API_KEY');
             const octokit = new core_1.Octokit({
-                auth: github_token,
+                auth: github_token
             });
             const configuration = new openai_1.Configuration({
-                apiKey: openai_key,
+                apiKey: openai_key
             });
             const openai = new openai_1.OpenAIApi(configuration);
             // get the pr details
             const { repo, owner, number } = github.context.issue;
             try {
-                const response = yield octokit.request("GET /repos/{owner}/{repo}/pulls/{pull_number}", {
+                const response = yield octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
                     owner,
                     repo,
                     pull_number: number,
                     headers: {
-                        "X-GitHub-Api-Version": "2022-11-28",
-                    },
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    }
                 });
                 const { title, body, patch_url } = response.data;
                 const summaryResponse = yield openai.createCompletion({
-                    model: "text-davinci-003",
-                    prompt: `Pull Request Summary: Title: ${title} Description: ${body || ""} Diff: ${patch_url}`,
+                    model: 'text-davinci-003',
+                    prompt: `Pull Request Summary: Title: ${title} Description: ${body || ''} Diff: ${patch_url}`,
                     temperature: 0.7,
                     max_tokens: 100,
                     top_p: 1,
                     frequency_penalty: 0,
-                    presence_penalty: 0,
+                    presence_penalty: 0
                 });
-                yield octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
+                yield octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
                     owner,
                     repo,
                     issue_number: number,
-                    body: summaryResponse.data.choices[0].text || "",
+                    body: summaryResponse.data.choices[0].text || '',
                     headers: {
-                        "X-GitHub-Api-Version": "2022-11-28",
-                    },
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    }
                 });
             }
             catch (error) {
-                console.log(error);
-                core.setFailed("something went wrong");
+                if (error instanceof Error)
+                    core.setFailed(error.message);
             }
         }
         catch (error) {
@@ -21178,7 +21178,7 @@ module.exports = JSON.parse('{"application/1d-interleaved-parityfec":{"source":"
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_from":"openai","_id":"openai@3.2.1","_inBundle":false,"_integrity":"sha512-762C9BNlJPbjjlWZi4WYK9iM2tAVAv0uUp1UmI34vb0CN5T2mjB/qM6RYBmNKMh/dN9fC+bxqPwWJZUTWW052A==","_location":"/openai","_phantomChildren":{},"_requested":{"type":"tag","registry":true,"raw":"openai","name":"openai","escapedName":"openai","rawSpec":"","saveSpec":null,"fetchSpec":"latest"},"_requiredBy":["#USER","/"],"_resolved":"https://registry.npmjs.org/openai/-/openai-3.2.1.tgz","_shasum":"1fa35bdf979cbde8453b43f2dd3a7d401ee40866","_spec":"openai","_where":"/Users/karthikeyan.shanmuga/.karthikeyan/side-projects/typescript-custom-action","author":{"name":"OpenAI"},"bugs":{"url":"https://github.com/openai/openai-node/issues"},"bundleDependencies":false,"dependencies":{"axios":"^0.26.0","form-data":"^4.0.0"},"deprecated":false,"description":"Node.js library for the OpenAI API","devDependencies":{"@types/node":"^12.11.5","typescript":"^3.6.4"},"homepage":"https://github.com/openai/openai-node#readme","keywords":["openai","open","ai","gpt-3","gpt3"],"license":"MIT","main":"./dist/index.js","name":"openai","repository":{"type":"git","url":"git+ssh://git@github.com/openai/openai-node.git"},"scripts":{"build":"tsc --outDir dist/"},"types":"./dist/index.d.ts","version":"3.2.1"}');
+module.exports = JSON.parse('{"_args":[["openai@3.2.1","/Users/karthikeyan.shanmuga/.karthikeyan/side-projects/PR-Summary"]],"_from":"openai@3.2.1","_id":"openai@3.2.1","_inBundle":false,"_integrity":"sha512-762C9BNlJPbjjlWZi4WYK9iM2tAVAv0uUp1UmI34vb0CN5T2mjB/qM6RYBmNKMh/dN9fC+bxqPwWJZUTWW052A==","_location":"/openai","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"openai@3.2.1","name":"openai","escapedName":"openai","rawSpec":"3.2.1","saveSpec":null,"fetchSpec":"3.2.1"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/openai/-/openai-3.2.1.tgz","_spec":"3.2.1","_where":"/Users/karthikeyan.shanmuga/.karthikeyan/side-projects/PR-Summary","author":{"name":"OpenAI"},"bugs":{"url":"https://github.com/openai/openai-node/issues"},"dependencies":{"axios":"^0.26.0","form-data":"^4.0.0"},"description":"Node.js library for the OpenAI API","devDependencies":{"@types/node":"^12.11.5","typescript":"^3.6.4"},"homepage":"https://github.com/openai/openai-node#readme","keywords":["openai","open","ai","gpt-3","gpt3"],"license":"MIT","main":"./dist/index.js","name":"openai","repository":{"type":"git","url":"git+ssh://git@github.com/openai/openai-node.git"},"scripts":{"build":"tsc --outDir dist/"},"types":"./dist/index.d.ts","version":"3.2.1"}');
 
 /***/ }),
 
