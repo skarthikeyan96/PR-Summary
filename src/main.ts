@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {Octokit} from '@octokit/core'
 import {OpenAIApi, Configuration} from 'openai'
+import {backOff} from 'exponential-backoff'
 
 async function run(): Promise<void> {
   try {
@@ -44,17 +45,19 @@ async function run(): Promise<void> {
 
       const {title, body, patch_url} = response.data
 
-      const summaryResponse = await openai.createCompletion({
-        model: 'text-davinci-003',
-        prompt: `Pull Request Summary: Title: ${title} Description: ${
-          body || ''
-        } Diff: ${patch_url}`,
-        temperature: 0.7,
-        max_tokens: 100,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0
-      })
+      const summaryResponse = await backOff(async () =>
+        openai.createCompletion({
+          model: 'text-davinci-003',
+          prompt: `Pull Request Summary: Title: ${title} Description: ${
+            body || ''
+          } Diff: ${patch_url}`,
+          temperature: 0.7,
+          max_tokens: 100,
+          top_p: 1,
+          frequency_penalty: 0,
+          presence_penalty: 0
+        })
+      )
 
       await octokit.request(
         'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
@@ -70,7 +73,6 @@ async function run(): Promise<void> {
       )
     } catch (error) {
       if (error instanceof Error) core.setFailed(error.message)
-
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
